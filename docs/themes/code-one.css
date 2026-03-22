@@ -1,0 +1,476 @@
+/*
+ * code-one — docsify theme.
+ *
+ * Layers on top of docsify's vue.css
+ * base theme.
+ */
+
+/* ------------------------------------------------------------------ */
+/* Variables                                                           */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --ink-bg: #f7f6f3;
+  --ink-bg-alt: #edeae3;
+  --ink-text: #2a2e38;
+  --ink-text-muted: #556070;
+  --ink-heading: #1a1e28;
+  --ink-accent: #4a6591;
+  --ink-accent-hover: #374f73;
+  --ink-link: #4a6591;
+  --ink-link-hover: #374f73;
+  --ink-border: #c8c2b8;
+  --ink-code-bg: #dce0ea;
+  --ink-code-text: #1e2230;
+  --ink-code-border: #b4bccb;
+  --ink-code-gutter-bg: #cdd2df;
+  --ink-code-gutter-text: #6b7286;
+  --ink-code-gutter-border: #b0b8c8;
+  --ink-inline-code-bg: #e5e2da;
+  --ink-inline-code-text: #3d5680;
+  --ink-sidebar-bg: #edeae3;
+  --ink-sidebar-text: #3d4f63;
+  --ink-sidebar-active: #4a6591;
+  --ink-callout-bg: #edeae3;
+  --ink-callout-border: #8892a5;
+  --ink-table-header-bg: #e5e2da;
+  --ink-table-stripe: #f2f0ec;
+}
+
+/* ------------------------------------------------------------------ */
+/* Body & base overrides                                               */
+/* ------------------------------------------------------------------ */
+
+body {
+  background: var(--ink-bg) !important;
+  color: var(--ink-text);
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+/* ------------------------------------------------------------------ */
+/* Sidebar                                                             */
+/* ------------------------------------------------------------------ */
+
+.sidebar {
+  background: var(--ink-sidebar-bg) !important;
+  border-right: 1px solid var(--ink-border) !important;
+  color: var(--ink-sidebar-text);
+}
+
+.sidebar .app-name-link {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--ink-heading) !important;
+  letter-spacing: -0.01em;
+}
+
+/* Remove all list markers */
+.sidebar-nav,
+.sidebar-nav ul,
+.sidebar-nav ul ul {
+  list-style: none !important;
+}
+
+.sidebar-nav {
+  padding: 0 1rem;
+}
+
+.sidebar-nav ul {
+  padding-left: 0;
+  margin: 0;
+}
+
+.sidebar-nav li > a {
+  color: var(--ink-sidebar-text) !important;
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.95em;
+  font-weight: 600;
+  border-radius: 5px;
+  padding: 0.18em 0.8em 0.18em 1.4em;
+  line-height: 1.5;
+  display: block;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-nav li > a:hover {
+  background: var(--ink-bg-alt);
+  color: var(--ink-accent) !important;
+}
+
+.sidebar-nav li.active > a,
+.sidebar-nav li > a.active {
+  background: var(--ink-sidebar-active) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* Nested sub-items (h2 headings from subMaxLevel) */
+.sidebar-nav ul ul {
+  padding-left: 1.2em;
+  margin: 0.1em 0;
+}
+
+.sidebar-nav ul ul li > a {
+  font-weight: 500;
+  font-size: 0.88em;
+  padding: 0.12em 0.6em;
+}
+
+/* Chevron indicators for items with children */
+.sidebar-nav li:has(> ul) > a {
+  position: relative;
+}
+
+.sidebar-nav li:has(> ul) > a::before {
+  content: '›';
+  position: absolute;
+  left: 0.45em;
+  font-size: 1.15em;
+  font-weight: 700;
+  line-height: 1.5;
+  transition: transform 0.2s ease;
+  transform: rotate(90deg);
+}
+
+.sidebar-toggle {
+  background: var(--ink-sidebar-bg) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Main content                                                        */
+/* ------------------------------------------------------------------ */
+
+.content {
+  background: var(--ink-bg) !important;
+}
+
+.markdown-section {
+  max-width: 52rem;
+}
+
+/* ------------------------------------------------------------------ */
+/* Typography                                                          */
+/* ------------------------------------------------------------------ */
+
+.markdown-section h1 {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 2.1em;
+  font-weight: 700;
+  color: var(--ink-heading);
+  border-bottom: 2px solid var(--ink-accent);
+  padding-bottom: 0.35em;
+  letter-spacing: -0.02em;
+}
+
+.markdown-section h2 {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.45em;
+  font-weight: 700;
+  color: var(--ink-heading);
+  border-bottom: 1px solid var(--ink-border);
+  padding-bottom: 0.25em;
+}
+
+.markdown-section h3 {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 1.15em;
+  font-weight: 600;
+  color: var(--ink-heading);
+}
+
+.markdown-section p {
+  color: var(--ink-text);
+}
+
+.markdown-section a {
+  color: var(--ink-link);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.markdown-section a:hover {
+  color: var(--ink-link-hover);
+  text-decoration: underline;
+}
+
+.markdown-section strong {
+  color: var(--ink-heading);
+}
+
+.markdown-section hr {
+  border-top: 1px solid var(--ink-border);
+}
+
+/* ------------------------------------------------------------------ */
+/* Code — inline                                                       */
+/* ------------------------------------------------------------------ */
+
+.markdown-section code {
+  font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+  font-size: 0.84em;
+  background: var(--ink-inline-code-bg);
+  color: var(--ink-inline-code-text);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  border: 1px solid var(--ink-border);
+}
+
+/* ------------------------------------------------------------------ */
+/* Code — blocks                                                       */
+/* ------------------------------------------------------------------ */
+
+.markdown-section pre {
+  position: relative;
+  background: var(--ink-code-bg) !important;
+  border: 1px solid var(--ink-code-border) !important;
+  border-radius: 6px;
+  margin: 1.4em 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.markdown-section pre::before {
+  display: none !important;
+}
+
+.markdown-section pre::after {
+  display: none !important;
+}
+
+.markdown-section pre > code {
+  display: block;
+  color: var(--ink-code-text) !important;
+  border: none !important;
+  padding: 1em 1.4em 1em 0 !important;
+  font-family: "JetBrains Mono", "Courier New", Courier, monospace;
+  font-size: 0.82em;
+  line-height: 1.55;
+  overflow-x: auto;
+  /* Full-height gutter background via gradient — must match .line-num width exactly */
+  background: linear-gradient(
+    to right,
+    var(--ink-code-gutter-bg) 2.8em,
+    var(--ink-code-gutter-border) 2.8em,
+    var(--ink-code-gutter-border) calc(2.8em + 1px),
+    var(--ink-code-bg) calc(2.8em + 1px)
+  ) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* Line numbers (from code-enhancements.js)                            */
+/* ------------------------------------------------------------------ */
+
+.markdown-section pre > code .code-line {
+  display: block;
+}
+
+.markdown-section pre > code .code-line .line-num {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 2.8em;
+  padding-right: 0.5em;
+  margin-right: 0.8em;
+  text-align: right;
+  color: var(--ink-code-gutter-text);
+  background: transparent;
+  border-right: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.markdown-section pre > code .code-line .line-content {
+  padding-left: 0.4em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Copy button                                                         */
+/* ------------------------------------------------------------------ */
+
+.markdown-section pre .copy-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: var(--ink-code-gutter-bg);
+  border: 1px solid var(--ink-code-gutter-border);
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.markdown-section pre .copy-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--ink-code-gutter-text);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.15s;
+}
+
+.markdown-section pre:hover .copy-btn {
+  opacity: 1;
+}
+
+.markdown-section pre .copy-btn:hover {
+  background: var(--ink-code-border);
+}
+
+.markdown-section pre .copy-btn:hover svg {
+  stroke: var(--ink-code-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* Prism syntax highlighting — cool palette on slate                   */
+/* ------------------------------------------------------------------ */
+
+.markdown-section pre code .token.comment,
+.markdown-section pre code .token.prolog,
+.markdown-section pre code .token.doctype,
+.markdown-section pre code .token.cdata {
+  color: #6b7286;
+  font-style: italic;
+}
+
+.markdown-section pre code .token.punctuation {
+  color: #404858;
+}
+
+.markdown-section pre code .token.property,
+.markdown-section pre code .token.tag,
+.markdown-section pre code .token.boolean,
+.markdown-section pre code .token.number,
+.markdown-section pre code .token.constant,
+.markdown-section pre code .token.symbol {
+  color: #8b5c2a;
+}
+
+.markdown-section pre code .token.selector,
+.markdown-section pre code .token.attr-name,
+.markdown-section pre code .token.string,
+.markdown-section pre code .token.char,
+.markdown-section pre code .token.builtin {
+  color: #3a6e2e;
+}
+
+.markdown-section pre code .token.operator,
+.markdown-section pre code .token.entity,
+.markdown-section pre code .token.url {
+  color: #5a6b82;
+}
+
+.markdown-section pre code .token.atrule,
+.markdown-section pre code .token.attr-value,
+.markdown-section pre code .token.keyword {
+  color: #1e5599;
+}
+
+.markdown-section pre code .token.function,
+.markdown-section pre code .token.class-name {
+  color: #5e3d82;
+}
+
+.markdown-section pre code .token.regex,
+.markdown-section pre code .token.important,
+.markdown-section pre code .token.variable {
+  color: #a65200;
+}
+
+.markdown-section pre code .token.important,
+.markdown-section pre code .token.bold {
+  font-weight: bold;
+}
+
+.markdown-section pre code .token.italic {
+  font-style: italic;
+}
+
+/* ------------------------------------------------------------------ */
+/* Blockquotes                                                         */
+/* ------------------------------------------------------------------ */
+
+.markdown-section blockquote {
+  background: var(--ink-callout-bg);
+  border-left: 4px solid var(--ink-callout-border);
+  border-radius: 0 5px 5px 0;
+  color: var(--ink-text);
+  padding: 0.9em 1.3em;
+}
+
+/* ------------------------------------------------------------------ */
+/* Tables                                                              */
+/* ------------------------------------------------------------------ */
+
+.markdown-section table {
+  font-family: "Source Sans 3", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.92em;
+}
+
+.markdown-section th {
+  background: var(--ink-table-header-bg);
+  color: var(--ink-heading);
+  border: 1px solid var(--ink-border);
+  padding: 0.6em 1em;
+  font-weight: 600;
+}
+
+.markdown-section td {
+  border: 1px solid var(--ink-border);
+  padding: 0.55em 1em;
+}
+
+.markdown-section tr:nth-child(even) {
+  background: var(--ink-table-stripe);
+}
+
+.markdown-section tr:hover {
+  background: var(--ink-bg-alt);
+}
+
+/* ------------------------------------------------------------------ */
+/* Search                                                              */
+/* ------------------------------------------------------------------ */
+
+.search input {
+  background: var(--ink-bg) !important;
+  color: var(--ink-text) !important;
+  border: 1px solid var(--ink-border) !important;
+}
+
+/* ------------------------------------------------------------------ */
+/* GitHub corner                                                       */
+/* ------------------------------------------------------------------ */
+
+.github-corner svg {
+  fill: var(--ink-accent);
+  color: var(--ink-bg);
+}
+
+/* ------------------------------------------------------------------ */
+/* Scrollbar                                                           */
+/* ------------------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--ink-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
