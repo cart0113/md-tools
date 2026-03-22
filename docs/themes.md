@@ -49,5 +49,5 @@ Copy the CSS file into your project, or link directly:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cart0113/md-tools@main/docs/themes/inkwell.css">
 ```
 
-Remove any existing docsify theme link (buble.css, vue.css, etc.) — these
-themes are fully standalone.
+Keep the base `vue.css` link for structural layout — load the custom theme
+after it.

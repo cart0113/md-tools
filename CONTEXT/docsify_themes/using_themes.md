@@ -20,15 +20,23 @@ https://raw.githubusercontent.com/cart0113/md-tools/main/docs/themes/graphite.cs
 https://raw.githubusercontent.com/cart0113/md-tools/main/docs/themes/inkwell.css
 ```
 
-## Option A — link directly from GitHub (simplest)
+## Base theme required
 
-Replace the CDN theme link in your `docs/index.html`:
+These themes layer on top of a docsify base theme for structural layout CSS.
+Keep `vue.css` loaded first, then add the custom theme after it:
 
 ```html
-<!-- instead of this -->
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/buble.css">
+<!-- base layout (always keep this) -->
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+<!-- custom theme overrides -->
+<link rel="stylesheet" href="themes/graphite.css">
+```
 
-<!-- use one of these -->
+## Option A — link directly from GitHub (simplest)
+
+Add after the base vue.css link:
+
+```html
 <link rel="stylesheet" href="https://raw.githubusercontent.com/cart0113/md-tools/main/docs/themes/graphite.css">
 <link rel="stylesheet" href="https://raw.githubusercontent.com/cart0113/md-tools/main/docs/themes/inkwell.css">
 ```
@@ -64,7 +72,7 @@ The only change needed is the CSS `<link>` in `index.html`. No JavaScript or
 plugin changes are required. Both themes work with docsify's search plugin,
 sidebar, and GitHub corner out of the box.
 
-## No CDN base theme needed
+## Base theme
 
-These themes are standalone — they do NOT layer on top of buble.css or vue.css.
-Remove any existing docsify theme link when switching to Inkwell or Graphite.
+These themes require a docsify base theme (vue.css) for structural layout.
+The custom CSS overrides all visual styling on top of the base layout.

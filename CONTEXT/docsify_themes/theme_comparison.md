@@ -45,4 +45,4 @@ Both themes share these improvements over stock docsify:
 6. Active sidebar items use the accent color as background
 7. Styled blockquotes that read as callout boxes
 8. Custom scrollbars
-9. Fully standalone — no base docsify theme required
+9. Layer on top of docsify's vue.css base theme for structural layout
