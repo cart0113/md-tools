@@ -2,4 +2,5 @@
 - [Table Formatter](table-formatter.md)
 - [Walker](walker.md)
 - [Usage](usage.md)
+- [Docsify Themes](themes.md)
 - [GitHub](https://github.com/cart0113/md-tools)
