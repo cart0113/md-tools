@@ -5,3 +5,6 @@
 
 - description: Custom docsify themes (Inkwell and Graphite) and how to use them in other projects
   path: docsify_themes/docsify_themes_toc.md
+
+- description: Sidebar builder — auto-generates docsify _sidebar.md from numbered filesystem structure
+  path: sidebar_builder/sidebar_builder_toc.md

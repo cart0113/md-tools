@@ -1,12 +1,17 @@
 # md-tools
 
-Recursive markdown file processing tools.
+Two things live here: **markdown processing tools** and **docsify themes**.
 
-The first tool reformats markdown tables so columns are padded and aligned for
-fixed-width fonts, keeping lines under a configurable width (default 120 chars).
+## Markdown Tools
 
-## Quick Links
+A Python library for recursively processing markdown files. A walker traverses
+a directory tree, finds all `.md` files, and applies a pluggable processing
+function to each one. The first built-in formatter reformats markdown tables to
+fixed-width alignment.
 
-- [Table Formatter](table-formatter.md) — how table reformatting works
-- [Walker](walker.md) — the recursive file processor
-- [Usage](usage.md) — examples and CLI usage
+## Docsify Themes
+
+A custom docsify theme (`code-one`) with a color picker, syntax-highlighted
+code blocks with line numbers, and a sidebar navigation indicator. Includes a
+sidebar builder tool that auto-generates `_sidebar.md` from a numbered
+filesystem structure.
