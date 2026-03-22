@@ -9,11 +9,16 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
   <!-- base docsify layout (required for structure) -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <!-- theme -->
   <link rel="stylesheet" href="themes/code-one.css">
-  <!-- Line numbers + copy button plugin (load before docsify) -->
+  <!-- color palette overrides -->
+  <link rel="stylesheet" href="themes/color-themes.css">
+  <!-- theme picker (applies saved choice before render) -->
+  <script src="themes/theme-picker.js"></script>
+  <!-- code enhancements plugin (load before docsify) -->
   <script src="themes/code-enhancements.js"></script>
 </head>
 <body>
@@ -31,7 +36,7 @@
         noData: 'No results.',
         depth: 3,
       },
-      plugins: [codeEnhancementsPlugin],
+      plugins: [codeEnhancementsPlugin, themePickerPlugin],
     }
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
