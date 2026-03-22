@@ -5,3 +5,6 @@
 
 - description: Design goals and differences between Inkwell and Graphite themes
   path: theme_comparison.md
+
+- description: Cache-busting strategy for local CSS/JS in docs/index.html
+  path: cache_busting.md

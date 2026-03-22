@@ -34,6 +34,7 @@
   }
 
   function findCurrentLink(pageLi) {
+    // 1. Check docsify's active class on sub-items
     var subs = pageLi.querySelectorAll('ul li');
     for (var i = 0; i < subs.length; i++) {
       if (subs[i].classList.contains('active')) {
@@ -42,14 +43,23 @@
       }
     }
 
+    // 2. Match by URL hash (handles ?id= sub-section anchors)
     var hash = window.location.hash;
     if (hash && hash.indexOf('?id=') !== -1) {
       var links = pageLi.querySelectorAll('ul li > a');
       for (var i = 0; i < links.length; i++) {
-        if (links[i].getAttribute('href') === hash) return links[i];
+        var href = links[i].getAttribute('href');
+        if (href === hash) return links[i];
+      }
+      // Normalize comparison: decode both sides
+      var decodedHash = decodeURIComponent(hash);
+      for (var i = 0; i < links.length; i++) {
+        var href = decodeURIComponent(links[i].getAttribute('href') || '');
+        if (href === decodedHash) return links[i];
       }
     }
 
+    // 3. Fall back to page-level link
     return pageLi.querySelector(':scope > a');
   }
 
@@ -109,6 +119,21 @@
         applyActiveStates();
       });
       reconnect();
+
+      // Sub-section clicks change the hash without reloading the page
+      // and may not trigger class changes, so listen for hash changes.
+      window.addEventListener('hashchange', function () {
+        setTimeout(applyActiveStates, 20);
+      });
+
+      // Also catch clicks on sidebar links directly for immediate feedback.
+      var nav = document.querySelector('.sidebar-nav');
+      if (nav) {
+        nav.addEventListener('click', function (e) {
+          var a = e.target.closest('a');
+          if (a) setTimeout(applyActiveStates, 30);
+        });
+      }
     });
   }
 

@@ -85,7 +85,7 @@ body::before {
 .sidebar .app-name-link {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   font-weight: 700;
-  font-size: 1.3em;
+  font-size: 1.45em;
   color: var(--t-heading) !important;
   letter-spacing: -0.02em;
   display: block;
@@ -136,7 +136,7 @@ body::before {
 .sidebar-nav li > a {
   color: var(--t-sidebar-text) !important;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 1.05em;
+  font-size: 1.15em;
   font-weight: 600;
   border: none !important;
   padding: 0.5em 0.8em 0.5em 1.2em;
@@ -164,6 +164,12 @@ body::before {
   background: color-mix(in srgb, var(--t-accent) 20%, transparent);
   pointer-events: none;
   z-index: 0;
+}
+
+/* Sub-section links: docsify adds .section-link with overflow:hidden,
+   which clips the offset bar pseudo-element. Override it. */
+.sidebar-nav li > a {
+  overflow: visible !important;
 }
 
 /* Always-present bar pseudo on all links (invisible until hover/active) */
@@ -202,7 +208,7 @@ body::before {
 /* Sub-item links: smaller text, indented via padding only */
 .sidebar-nav ul ul li > a {
   font-weight: 500;
-  font-size: 13.5px;
+  font-size: 14.5px;
   padding: 0.3em 0.8em 0.3em 2.2em;
 }
 
