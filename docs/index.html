@@ -20,6 +20,8 @@
   <script src="themes/theme-picker.js"></script>
   <!-- code enhancements plugin (load before docsify) -->
   <script src="themes/code-enhancements.js"></script>
+  <!-- sidebar bar indicator (load before docsify) -->
+  <script src="themes/sidebar-nav.js"></script>
 </head>
 <body>
   <div id="app"></div>
@@ -36,7 +38,7 @@
         noData: 'No results.',
         depth: 3,
       },
-      plugins: [codeEnhancementsPlugin, themePickerPlugin],
+      plugins: [codeEnhancementsPlugin, themePickerPlugin, sidebarNavPlugin],
     }
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
