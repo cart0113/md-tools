@@ -8,3 +8,11 @@
 
 - description: Sidebar builder — auto-generates docsify _sidebar.md from numbered filesystem structure
   path: sidebar_builder/sidebar_builder_toc.md
+
+- description: Docsify extension system — YAML-driven config, top nav, collapsible folders, sidebar indicator
+  path: docsify_ext/docsify_ext_toc.md
+
+## Documents
+
+- description: Frontend debugging workflow — console logs, screenshots, Playwright policy
+  path: frontend_development_and_debugging.md

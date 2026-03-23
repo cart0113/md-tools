@@ -1,15 +1,17 @@
 """Generate a docsify _sidebar.md from a numbered filesystem structure.
 
-Files and folders use NN- prefixes to control sidebar order. Prefixes are
-stripped for display text. The tool validates numbering and errors on
-duplicates, gaps, or mixed numbered/unnumbered items at the same level.
+Every .md file and directory at a given level must have a numeric prefix
+(e.g., 0_name, 1_name). Files and folders are treated identically — both
+are sorted by prefix number. Files become clickable links, folders become
+bold section headers with their children indented beneath them. Prefixes
+are stripped from all display text.
 """
 
 import pathlib
 import re
 
 SKIP_FILES = {"_sidebar.md", "_navbar.md", "_coverpage.md"}
-PREFIX_RE = re.compile(r"^(\d{2})-(.+)$")
+PREFIX_RE = re.compile(r"^(\d+)_(.+)$")
 H1_RE = re.compile(r"^#\s+(.+)", re.MULTILINE | re.IGNORECASE)
 
 
@@ -54,8 +56,6 @@ def _collect_items(directory):
         if entry.is_file():
             if entry.suffix != ".md" or entry.name in SKIP_FILES:
                 continue
-            if entry.name.lower() == "readme.md":
-                continue
             items.append(entry)
         elif entry.is_dir():
             if not _has_md_files(entry):
@@ -66,37 +66,19 @@ def _collect_items(directory):
 
 def _validate_numbering(items, directory):
     numbered = []
-    unnumbered = []
 
     for item in items:
-        name = (
-            item.name
-            if item.is_dir()
-            else item.stem
-            if item.suffix == ".md"
-            else item.name
-        )
         prefix = _parse_prefix(item.name)
         if prefix is not None:
             numbered.append((prefix, item))
         else:
-            bad_match = re.match(r"^(\d+)-", item.name)
-            if bad_match:
-                raise SidebarError(
-                    f"Invalid prefix format '{item.name}' in {directory} "
-                    f"— use two-digit zero-padded prefix (e.g., 01-name)"
-                )
-            unnumbered.append(item)
-
-    if numbered and unnumbered:
-        unnumbered_names = ", ".join(i.name for i in unnumbered)
-        raise SidebarError(
-            f"Mixed numbered and unnumbered items in {directory}: "
-            f"unnumbered: {unnumbered_names}"
-        )
+            raise SidebarError(
+                f"Unnumbered item '{item.name}' in {directory} "
+                f"— all files and folders must have a N_ prefix"
+            )
 
     if not numbered:
-        return sorted(items, key=lambda i: i.name)
+        return []
 
     numbered.sort(key=lambda pair: pair[0])
 
@@ -104,7 +86,7 @@ def _validate_numbering(items, directory):
     for num, item in numbered:
         if num in seen:
             raise SidebarError(
-                f"Duplicate number {num:02d} in {directory}: "
+                f"Duplicate number {num} in {directory}: "
                 f"'{seen[num].name}' and '{item.name}'"
             )
         seen[num] = item
@@ -119,17 +101,25 @@ def _validate_numbering(items, directory):
     return [item for _, item in numbered]
 
 
-def _build_tree(docs_root, current_dir, depth):
+def _validate_top_level_folders_only(items, directory):
+    for item in items:
+        if item.is_file():
+            raise SidebarError(
+                f"Top-level file '{item.name}' in {directory} "
+                f"— when top_level_folders_as_top_control is true, "
+                f"all top-level items must be folders"
+            )
+
+
+def _build_tree(docs_root, current_dir, depth, top_level_folders_only):
     indent = "  " * depth
     lines = []
 
-    readme = current_dir / "README.md"
-    if depth == 0 and readme.exists():
-        title = _extract_h1(readme)
-        lines.append(f"{indent}- [{title}](/)")
-
     items = _collect_items(current_dir)
     ordered = _validate_numbering(items, current_dir)
+
+    if depth == 0 and top_level_folders_only:
+        _validate_top_level_folders_only(ordered, current_dir)
 
     for item in ordered:
         if item.is_file():
@@ -138,26 +128,23 @@ def _build_tree(docs_root, current_dir, depth):
             lines.append(f"{indent}- [{title}]({rel_path})")
         elif item.is_dir():
             label = _strip_prefix(item.name)
-            dir_readme = item / "README.md"
-            if dir_readme.exists():
-                rel_path = dir_readme.relative_to(docs_root)
-                lines.append(f"{indent}- [{label}]({rel_path})")
-            else:
-                lines.append(f"{indent}- **{label}**")
-            lines.extend(_build_tree(docs_root, item, depth + 1))
+            lines.append(f"{indent}- **{label}**")
+            lines.extend(
+                _build_tree(docs_root, item, depth + 1, top_level_folders_only)
+            )
 
     return lines
 
 
-def build_sidebar(docs_folder):
+def build_sidebar(docs_folder, top_level_folders_only):
     docs_root = pathlib.Path(docs_folder)
-    lines = _build_tree(docs_root, docs_root, 0)
+    lines = _build_tree(docs_root, docs_root, 0, top_level_folders_only)
     return "\n".join(lines) + "\n"
 
 
-def write_sidebar(docs_folder):
+def write_sidebar(docs_folder, top_level_folders_only):
     docs_root = pathlib.Path(docs_folder)
-    content = build_sidebar(docs_root)
+    content = build_sidebar(docs_root, top_level_folders_only)
     sidebar_path = docs_root / "_sidebar.md"
     sidebar_path.write_text(content, encoding="utf-8")
     return sidebar_path

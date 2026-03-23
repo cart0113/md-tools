@@ -147,68 +147,6 @@ body::before {
   position: relative;
 }
 
-/* ---- Sidebar bar indicator (managed by sidebar-nav.js) ---- */
-
-/* Spanning bar: light accent covering active page + all subsections */
-.sidebar-nav li.sb-spanning {
-  position: relative;
-}
-
-.sidebar-nav li.sb-spanning::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: color-mix(in srgb, var(--t-accent) 20%, transparent);
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* Sub-section links: docsify adds .section-link with overflow:hidden,
-   which clips the offset bar pseudo-element. Override it. */
-.sidebar-nav li > a {
-  overflow: visible !important;
-}
-
-/* Always-present bar pseudo on all links (invisible until hover/active) */
-.sidebar-nav li > a::before {
-  content: '';
-  position: absolute;
-  left: var(--sb-bar-left, 0px);
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: transparent;
-  transition: background 0.15s ease;
-  z-index: 1;
-}
-
-/* Hover: medium-strength bar */
-.sidebar-nav li > a:hover::before {
-  background: color-mix(in srgb, var(--t-accent) 50%, transparent);
-}
-
-/* Current section: strong bar + accent text */
-.sidebar-nav li > a.sb-current {
-  color: var(--t-accent) !important;
-  font-weight: 600;
-}
-
-.sidebar-nav li > a.sb-current::before {
-  background: var(--t-accent);
-}
-
-/* Hide the dash text nodes docsify puts before sub-item links */
-.sidebar-nav ul ul li,
-.sidebar-nav ul ul ul li,
-.sidebar-nav ul ul ul ul li,
-.sidebar-nav ul ul ul ul ul li,
-.sidebar-nav ul ul ul ul ul ul li {
-  font-size: 0;
-}
-
 /* Sub-item links: smaller text, progressively indented by depth */
 .sidebar-nav ul ul li > a {
   font-weight: 500;
@@ -216,19 +154,32 @@ body::before {
   padding: 0.3em 0.8em 0.3em 2.2em;
 }
 
-.sidebar-nav ul ul ul li > a {
+/* Bold folder labels in sidebar (non-link section headers) */
+.sidebar-nav ul ul li > p {
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 0.3em 0.8em 0.3em 2.2em;
+  margin: 0;
+  color: var(--t-sidebar-text);
+}
+
+.sidebar-nav ul ul ul li > a,
+.sidebar-nav ul ul ul li > p {
   padding-left: 3.2em;
 }
 
-.sidebar-nav ul ul ul ul li > a {
+.sidebar-nav ul ul ul ul li > a,
+.sidebar-nav ul ul ul ul li > p {
   padding-left: 4.2em;
 }
 
-.sidebar-nav ul ul ul ul ul li > a {
+.sidebar-nav ul ul ul ul ul li > a,
+.sidebar-nav ul ul ul ul ul li > p {
   padding-left: 5.2em;
 }
 
-.sidebar-nav ul ul ul ul ul ul li > a {
+.sidebar-nav ul ul ul ul ul ul li > a,
+.sidebar-nav ul ul ul ul ul ul li > p {
   padding-left: 6.2em;
 }
 

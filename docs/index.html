@@ -13,32 +13,48 @@
   <!-- base docsify layout (required for structure) -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
   <!-- theme -->
-  <link rel="stylesheet" href="themes/code-one.css?v=20260322m">
+  <link rel="stylesheet" href="themes/code-one.css?v=20260323a">
   <!-- color palette overrides -->
-  <link rel="stylesheet" href="themes/color-themes.css?v=20260322m">
+  <link rel="stylesheet" href="themes/color-themes.css?v=20260323a">
+  <!-- extension styles (indicator, collapsible folders, top nav, toggles) -->
+  <link rel="stylesheet" href="themes/docsify-ext.css?v=20260323a">
+  <!-- generated config (applies CSS classes before render) -->
+  <script src="themes/docsify-ext-config.js?v=20260323a"></script>
   <!-- theme picker (applies saved choice before render) -->
-  <script src="themes/theme-picker.js?v=20260322m"></script>
+  <script src="themes/theme-picker.js?v=20260323a"></script>
   <!-- code enhancements plugin (load before docsify) -->
-  <script src="themes/code-enhancements.js?v=20260322m"></script>
+  <script src="themes/code-enhancements.js?v=20260323a"></script>
   <!-- sidebar bar indicator (load before docsify) -->
-  <script src="themes/sidebar-nav.js?v=20260322m"></script>
+  <script src="themes/sidebar-nav.js?v=20260323a"></script>
+  <!-- collapsible folder sections -->
+  <script src="themes/collapsible-folders.js?v=20260323a"></script>
+  <!-- top-level folder navigation bar -->
+  <script src="themes/top-nav.js?v=20260323a"></script>
 </head>
 <body>
   <div id="app"></div>
   <script>
+    var cfg = window.__docsifyExtConfig;
     window.$docsify = {
       name: 'md-tools',
-      nameLink: '/',
-      repo: 'https://github.com/cart0113/md-tools',
+      nameLink: '/#/0_overview/0_md-tools',
+      homepage: '0_overview/0_md-tools.md',
+      repo: cfg.github_corner ? 'https://github.com/cart0113/md-tools' : '',
       loadSidebar: true,
-      subMaxLevel: 1,
+      subMaxLevel: cfg.document_header_depth,
       auto2top: true,
       search: {
         placeholder: 'Search docs',
         noData: 'No results.',
         depth: 3,
       },
-      plugins: [codeEnhancementsPlugin, themePickerPlugin, sidebarNavPlugin],
+      plugins: [
+        codeEnhancementsPlugin,
+        collapsibleFoldersPlugin,
+        cfg.theme_picker ? themePickerPlugin : null,
+        cfg.document_inline_sidebar_selector ? sidebarNavPlugin : null,
+        cfg.top_level_folders_as_top_control ? topNavPlugin : null,
+      ].filter(Boolean),
     }
   </script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>

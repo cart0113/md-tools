@@ -18,18 +18,19 @@ The prefixes are stripped in the sidebar output so users never see them.
 
 ## Filesystem Convention
 
-Files and folders use a numeric prefix to control sidebar order:
+Every `.md` file and every directory must have a two-digit numeric prefix.
+Files and folders share a single number sequence per directory level — no
+number can be used by both a file and a folder.
 
 ```
 docs/
-├── 01-introduction.md
-├── 02-usage.md
-├── 03-api/
-│   ├── 01-walker.md
-│   ├── 02-table-formatter.md
-│   └── 03-sidebar-builder.md
-├── 04-themes.md
-└── README.md
+├── 01-home.md
+├── 02-markdown-tools/
+│   └── 01-overview.md
+├── 03-docsify-themes/
+│   ├── 01-overview.md
+│   ├── 02-sidebar-builder.md
+│   └── 03-code-blocks.md
 ```
 
 ### Prefix Format
@@ -38,52 +39,65 @@ docs/
 - The prefix and its trailing hyphen are stripped for display
 - The remainder becomes the display name (with h1 override — see below)
 
-### Special Files
+### Skipped Files
 
-- `README.md` — no prefix needed. At the root level it becomes the "Home" `/`
-  link. Inside a subdirectory it becomes the folder's clickable link.
-- `_sidebar.md`, `_navbar.md`, `_coverpage.md` — always skipped.
+- `_sidebar.md`, `_navbar.md`, `_coverpage.md` — always skipped
+- Files starting with `_` or `.` — skipped
+- Non-`.md` files — skipped
+- Directories with no `.md` files anywhere inside them — skipped
+
+There are no special files. `README.md` is not allowed — it will trigger a
+validation error like any other unnumbered file.
 
 ## Display Name Resolution
 
 For each `.md` file, the sidebar link text is determined by:
 
-1. The first `# heading` in the file (h1), if one exists
+1. The first `# heading` (h1) in the file, if one exists
 2. Otherwise, the filename with prefix stripped, hyphens/underscores replaced
    with spaces, and title-cased
 
-For folders without a README.md, the folder name is used with the same
-prefix-stripping and title-casing logic.
+Folders use their directory name with the same prefix-stripping and
+title-casing logic. Folders appear as bold non-clickable labels in the sidebar.
 
 ## Sidebar Output
 
 The generated `_sidebar.md` mirrors the filesystem hierarchy:
 
 ```markdown
-- [Home](/)
-- [Introduction](01-introduction.md)
-- [Usage](02-usage.md)
-- **API**
-  - [Walker](03-api/01-walker.md)
-  - [Table Formatter](03-api/02-table-formatter.md)
-  - [Sidebar Builder](03-api/03-sidebar-builder.md)
-- [Themes](04-themes.md)
+- [md-tools](01-home.md)
+- **Markdown Tools**
+  - [Markdown Tools](02-markdown-tools/01-overview.md)
+- **Docsify Themes**
+  - [Docsify Themes](03-docsify-themes/01-overview.md)
+  - [Sidebar Builder](03-docsify-themes/02-sidebar-builder.md)
+  - [Code Blocks Demo](03-docsify-themes/03-code-blocks.md)
 ```
 
-Note: link hrefs keep the numeric prefixes (docsify needs the real filename).
-Only the display text is cleaned.
+Link hrefs keep the numeric prefixes (docsify needs the real filenames). Only
+the display text is cleaned.
+
+## Docsify Homepage
+
+Since there is no `README.md`, the docsify config must set `homepage` to point
+to the numbered home page:
+
+```javascript
+window.$docsify = {
+  homepage: '01-home.md',
+  nameLink: '/#/01-home',
+}
+```
 
 ## Validation Rules
 
 The tool errors (not warns) on numbering problems:
 
+- **Unnumbered items**: any file or folder without a `NN-` prefix is an error
 - **Duplicate numbers**: two items at the same level sharing a prefix
-  (e.g., `01-foo.md` and `01-bar.md` in the same directory)
+  (e.g., `01-foo.md` and `01-bar/` in the same directory)
 - **Gaps**: numbers that skip values (e.g., 01, 02, 05 — missing 03, 04)
-- **Mixed numbered/unnumbered**: at a given directory level, either all items
-  are numbered or none are (excluding special files like README.md). Mixing
-  numbered and unnumbered files at the same level is an error.
-- **Invalid prefix format**: prefixes that don't match the `NN-` pattern
+- **Invalid prefix format**: prefixes that aren't zero-padded two digits
   (e.g., `1-foo.md` instead of `01-foo.md`)
 
 Errors are raised as exceptions with a clear message naming the problem file
@@ -108,3 +122,9 @@ sidebar_builder.write_sidebar("docs")
 - `build_sidebar(docs_folder)` — returns the sidebar markdown as a string
 - `write_sidebar(docs_folder)` — writes `_sidebar.md` into the docs folder,
   returns the path written
+
+## Git Pre-Commit Hook
+
+A pre-commit hook at `.git/hooks/pre-commit` auto-rebuilds the sidebar on any
+commit that touches `docs/`. The hook runs the sidebar builder and stages the
+updated `_sidebar.md`.

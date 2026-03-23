@@ -1,14 +1,18 @@
 /*
  * Sidebar bar indicator — spanning bar + section highlight.
  *
- * Adds a light bar spanning the active page entry and all its
- * subsections, with a strong accent bar on the currently viewed
- * section. Manages custom classes (sb-spanning, sb-current) in
- * response to docsify's active-state updates and URL changes.
+ * Collapse guard: clicking an expanded header once arms it — the click
+ * is swallowed entirely so docsify never sees it. Only a second
+ * consecutive click allows collapse. Any other click disarms.
+ *
+ * Scroll adjustment: switching pages keeps the clicked header under
+ * the cursor after sub-sections expand/collapse.
  */
 
 (function () {
   var observer;
+  var collapseArmed = null;       // href of header armed for collapse
+  var pendingScrollTarget = null; // { element, viewportY }
 
   function findPageLi(nav) {
     var rootUl = nav.querySelector(':scope > ul');
@@ -34,7 +38,22 @@
   }
 
   function findCurrentLink(pageLi) {
-    // 1. Check docsify's active class on sub-items
+    var hash = window.location.hash;
+
+    if (!hash || hash.indexOf('?id=') === -1) {
+      return pageLi.querySelector(':scope > a');
+    }
+
+    var links = pageLi.querySelectorAll('ul li > a');
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].getAttribute('href') === hash) return links[i];
+    }
+    var decodedHash = decodeURIComponent(hash);
+    for (var i = 0; i < links.length; i++) {
+      var href = decodeURIComponent(links[i].getAttribute('href') || '');
+      if (href === decodedHash) return links[i];
+    }
+
     var subs = pageLi.querySelectorAll('ul li');
     for (var i = 0; i < subs.length; i++) {
       if (subs[i].classList.contains('active')) {
@@ -43,23 +62,6 @@
       }
     }
 
-    // 2. Match by URL hash (handles ?id= sub-section anchors)
-    var hash = window.location.hash;
-    if (hash && hash.indexOf('?id=') !== -1) {
-      var links = pageLi.querySelectorAll('ul li > a');
-      for (var i = 0; i < links.length; i++) {
-        var href = links[i].getAttribute('href');
-        if (href === hash) return links[i];
-      }
-      // Normalize comparison: decode both sides
-      var decodedHash = decodeURIComponent(hash);
-      for (var i = 0; i < links.length; i++) {
-        var href = decodeURIComponent(links[i].getAttribute('href') || '');
-        if (href === decodedHash) return links[i];
-      }
-    }
-
-    // 3. Fall back to page-level link
     return pageLi.querySelector(':scope > a');
   }
 
@@ -111,7 +113,17 @@
 
   function sidebarNavPlugin(hook) {
     hook.doneEach(function () {
-      setTimeout(applyActiveStates, 20);
+      if (pendingScrollTarget) {
+        var target = pendingScrollTarget;
+        pendingScrollTarget = null;
+        var newRect = target.element.getBoundingClientRect();
+        var delta = newRect.top - target.viewportY;
+        if (Math.abs(delta) > 2) {
+          var sidebar = document.querySelector('.sidebar');
+          if (sidebar) sidebar.scrollTop += delta;
+        }
+      }
+      applyActiveStates();
     });
 
     hook.ready(function () {
@@ -120,20 +132,72 @@
       });
       reconnect();
 
-      // Sub-section clicks change the hash without reloading the page
-      // and may not trigger class changes, so listen for hash changes.
       window.addEventListener('hashchange', function () {
-        setTimeout(applyActiveStates, 20);
+        applyActiveStates();
       });
 
-      // Also catch clicks on sidebar links directly for immediate feedback.
       var nav = document.querySelector('.sidebar-nav');
-      if (nav) {
-        nav.addEventListener('click', function (e) {
-          var a = e.target.closest('a');
-          if (a) setTimeout(applyActiveStates, 30);
-        });
-      }
+      if (!nav) return;
+
+      // Capture phase — runs before docsify's handlers
+      nav.addEventListener('click', function (e) {
+        var a = e.target.closest('a');
+        if (!a) return;
+
+        var href = a.getAttribute('href');
+        var li = a.closest('li');
+        var rootUl = nav.querySelector(':scope > ul');
+        var isTopLevel = li && li.parentElement === rootUl;
+
+        if (!isTopLevel) {
+          collapseArmed = null;
+          return;
+        }
+
+        // --- Top-level header click ---
+        var currentPath = (window.location.hash || '#/').split('?')[0];
+        var linkPath = (href || '').split('?')[0];
+        var isCurrentPage = linkPath === currentPath;
+
+        if (!isCurrentPage) {
+          collapseArmed = null;
+          pendingScrollTarget = {
+            element: a,
+            viewportY: a.getBoundingClientRect().top,
+          };
+          return;
+        }
+
+        // Check if sub-sections are visible (docsify may not use active on the li)
+        var subUl = li.querySelector('ul');
+        var isExpanded = subUl && subUl.children.length > 0;
+
+        if (!isExpanded) {
+          collapseArmed = null;
+          return;
+        }
+
+        if (collapseArmed === href) {
+          collapseArmed = null;
+          return;
+        }
+
+        // First click on expanded header — swallow the event completely
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        collapseArmed = href;
+
+        // Update URL silently (replaceState doesn't trigger hashchange)
+        if (window.location.hash !== linkPath) {
+          history.replaceState(null, '',
+            window.location.pathname + window.location.search + linkPath);
+        }
+
+        // Scroll content to top
+        window.scrollTo(0, 0);
+
+        applyActiveStates();
+      }, true);
     });
   }
 
