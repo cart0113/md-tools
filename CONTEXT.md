@@ -1,7 +1,8 @@
 # md-tools
 
-Recursive markdown file processing tools. Currently focused on table reformatting
-to produce fixed-width-aligned output using prettytable.
+Pluggable markdown processing tools. A generic walker applies tool functions to
+all `.md` files in a directory tree. Currently ships one tool (table formatter);
+more may be added following the same `(text, file_path) -> text` pattern.
 
 ## Python
 

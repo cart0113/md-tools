@@ -12,7 +12,7 @@ pluggable Python function to each one.
 
 ## Architecture
 
-Two modules in `src/md_tools/`:
+Currently one tool in `src/md_tools/`, with the walker designed to support more:
 
 - **`walker.py`** — `walk_and_apply(folder_path, process_fn)` recursively finds
   all `.md` files and applies `process_fn(text, file_path) -> text`. Only writes
@@ -23,6 +23,9 @@ Two modules in `src/md_tools/`:
   aligned using prettytable. Columns are padded so they line up in monospace fonts.
   Tables that would exceed `max_line_width` get their wide columns wrapped into
   multiline cells while narrow columns keep their natural width.
+
+Future tools would follow the same pattern: a function with signature
+`(text, file_path) -> text` that can be passed to the walker.
 
 ## Usage Pattern
 
